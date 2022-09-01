@@ -6,7 +6,7 @@
 /*   By: mcoulomb <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 15:41:31 by mcoulomb          #+#    #+#             */
-/*   Updated: 2022/08/29 15:05:50 by mcoulomb         ###   ########.fr       */
+/*   Updated: 2022/08/31 14:26:01 by mcoulomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ char	*ft_strjoin(int size, char **strs, char *sep)
 	i = 0;
 	k = 0;
 	j = total_len(size, strs) + (ft_strlen(sep) * (size - 1));
-	if (size == 0)
-		return (newstr = '\0');
+	if (size <= 0)
+		return ((char *)malloc(sizeof(char)));
 	newstr = (char *)malloc(j * sizeof(char) + 1);
 	if (newstr == 0)
 		return (0);
@@ -71,3 +71,8 @@ char	*ft_strjoin(int size, char **strs, char *sep)
 	newstr[k] = '\0';
 	return (newstr);
 }
+
+/*int	main(int argc, char **argv)
+{
+	printf("%s", ft_strjoin(argc - 2, argv + 1, argv[argc - 1]));
+}*/

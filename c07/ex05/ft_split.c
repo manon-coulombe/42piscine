@@ -6,7 +6,7 @@
 /*   By: mcoulomb <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 11:29:16 by mcoulomb          #+#    #+#             */
-/*   Updated: 2022/08/29 15:06:52 by mcoulomb         ###   ########.fr       */
+/*   Updated: 2022/09/01 12:53:15 by mcoulomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	is_charset(char c, char *charset)
 	int	i;
 
 	i = 0;
+	if (charset == NULL)
+		return (0);
 	while (charset[i] != '\0')
 	{
 		if (c == charset[i])
@@ -44,32 +46,35 @@ int	count_words(char *str, char *charset)
 
 	i = 0;
 	j = 0;
+	if (str == NULL)
+		return (0);
 	while (str[i] != '\0')
 	{
-		while (is_charset(str[i], charset) && str[i] != '\0')
+		while (str[i] != '\0' && is_charset(str[i], charset))
 			i++;
-		while (!is_charset(str[i], charset) && str[i] != '\0')
+		while (str[i] != '\0' && !is_charset(str[i], charset))
 			i++;
-		while (is_charset(str[i], charset) && str[i] != '\0')
+		while (str[i] != '\0' && is_charset(str[i], charset))
 			i++;
 		j++;
 	}
 	return (j);
 }
 
-char	*ft_strdup(char *src)
+char	*ft_strdup(char *src, int start, int end)
 {
 	char	*dest;
 	int		i;
 
 	i = 0;
-	dest = (char *)malloc(sizeof(char) * (ft_strlen(src) + 1));
+	dest = (char *)malloc(sizeof(char) * (end - start + 1));
 	if (dest == NULL)
 		return (0);
-	while (src[i] != '\0')
+	while (start < end)
 	{
-		dest[i] = src[i];
+		dest[i] = src[start];
 		i++;
+		start++;
 	}
 	dest[i] = '\0';
 	return (dest);
@@ -78,42 +83,41 @@ char	*ft_strdup(char *src)
 char	**ft_split(char *str, char *charset)
 {
 	char	**strs;
-	char	*temp;
 	int		i;
-	int		j;
 	int		k;
+	int		start;
 
-	strs = (char **)malloc(sizeof(char *) * (count_words(str, charset) + 1));
-	if (strs == NULL)
-		return (NULL);
 	i = 0;
+	strs = (char **)malloc(sizeof(char *) * (count_words(str, charset) + 1));
+	if (strs == NULL || str == NULL)
+		return (NULL);
 	k = 0;
 	while (str[k] != '\0')
 	{
-		temp = (char *)malloc(sizeof(char) * ft_strlen(str));
-		if (temp == NULL)
-			return (NULL);
-		j = 0;
 		while (is_charset(str[k], charset) && str[k] != '\0')
 			k++;
+		start = k;
 		while (!is_charset(str[k], charset) && str[k] != '\0')
-			temp[j++] = str[k++];
-		strs[i++] = ft_strdup(temp);
+			k++;
+		if (k != start)
+			strs[i++] = ft_strdup(str, start, k);
 	}
 	strs[i] = 0;
 	return (strs);
 }
 
-/*int	main(void)
+/*int	main(int argc, char **argv)
 {
-//	char	*str = " &boneibnqribnruivnjour,&& bonsoir, adieu, lala &  l";
-	char	*str = "";
-	char	*sep = "& ";
-	char	**res = ft_split(str, sep);
+	char	**res = ft_split(argv[1], argv[2]);
 	int	i = 0;
-
+	
+	printf("%d\n", count_words(argv[1], argv[2]));
+	if (res[i] == 0)
+		printf("c null");
 	while (*(res + i))
-	{
 		printf("%s\n", res[i++]);
-	}
+	i = 0;
+        while (*(res + i))
+                free(res[i++]);
+	free(res);
 }*/
